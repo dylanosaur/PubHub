@@ -9,6 +9,7 @@ create table books (
   content bytea
 );
 
+-- dummy edit for commit
 insert into books values (
   '1111111111111',          	-- id
   'The Adventures of Steve',    -- title

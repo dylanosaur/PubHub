@@ -25,6 +25,6 @@ public interface TagDAO {
 	public Book getBookByISBN(String isbn);
 	
 	public boolean addBookTag(Book book, String tag);
-	//public boolean removeBookTag(Book book, String tag); 
+	public boolean removeBookTag(Book book, String tag); 
 		
 }

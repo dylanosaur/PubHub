@@ -27,7 +27,7 @@ public class TagDAOImpl implements TagDAO {
 			stmt.setString(1, book.getIsbn13());
 			
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				allTags.add(rs.getString("book_tag"));		
 			}
 			
@@ -52,7 +52,7 @@ public class TagDAOImpl implements TagDAO {
 			stmt.setString(1, tag);
 			
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				Book myBook = getBookByISBN(rs.getString("isbn_13"));
 				String isbn = myBook.getIsbn13();
 				taggedBooks.add(getBookByISBN(isbn));		
@@ -102,17 +102,16 @@ public class TagDAOImpl implements TagDAO {
 
 
 	
-	
+	@Override
 	public boolean addBookTag(Book book, String tag) {	
 		
 	boolean success = false;
 	try {
 		connection = DAOUtilities.getConnection();
-		String sql = "INSERT INTO book_tags values (?, ?)";
-		System.out.println("Attempting to execute sql statement: "+sql);
+		String sql = "INSERT INTO book_tags VALUES (?, ?)";
 		stmt = connection.prepareStatement(sql);
-		stmt.setString(1, book.getIsbn13());
-		stmt.setString(2,  tag);
+		stmt.setString(1, tag);
+		stmt.setString(2, book.getIsbn13());
 		stmt.executeUpdate();
 		success = true;
 	} catch (SQLException e) {
@@ -123,8 +122,26 @@ public class TagDAOImpl implements TagDAO {
 	return success;
 	}
 	
-	//public boolean removeBookTag(Book book, String tag) {} 
-	
+	@Override
+	public boolean removeBookTag(Book book, String tag) {	
+		
+	boolean success = false;
+	try {
+		connection = DAOUtilities.getConnection();
+		String sql = "DELETE FROM book_tags WHERE book_tag=? AND isbn_13=?";
+		stmt = connection.prepareStatement(sql);
+		stmt.setString(1, tag);
+		stmt.setString(2, book.getIsbn13());
+		stmt.executeUpdate();
+		success = true;
+	} catch (SQLException e) {
+		e.printStackTrace();
+	} finally {
+		closeResources();
+	}
+	return success;
+	}
+
 	
 	
 	// Closing all resources is important, to prevent memory leaks. 
